@@ -27,6 +27,7 @@
 		F844A8B12C87480F007EA48A /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8AF2C87480F007EA48A /* Post.swift */; };
 		F844A8B22C87480F007EA48A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B02C87480F007EA48A /* Comment.swift */; };
 		F844A8B62C874D56007EA48A /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B52C874D56007EA48A /* CreatePostView.swift */; };
+		F844A8B82C875538007EA48A /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B72C875538007EA48A /* DateExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		F844A8AF2C87480F007EA48A /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		F844A8B02C87480F007EA48A /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		F844A8B52C874D56007EA48A /* CreatePostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
+		F844A8B72C875538007EA48A /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				25F17D2C2C870C9F001CEF06 /* SignUpView.swift */,
 				25F17D2E2C870CAD001CEF06 /* LoginView.swift */,
 				F844A8B52C874D56007EA48A /* CreatePostView.swift */,
+				F844A8B72C875538007EA48A /* DateExtension.swift */,
 			);
 			path = MobileAcebook;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE5D85E12AC9AFA9009680C6 /* AuthenticationService.swift in Sources */,
+				F844A8B82C875538007EA48A /* DateExtension.swift in Sources */,
 				F844A8B12C87480F007EA48A /* Post.swift in Sources */,
 				F844A8B62C874D56007EA48A /* CreatePostView.swift in Sources */,
 				25F17D2F2C870CAD001CEF06 /* LoginView.swift in Sources */,
