@@ -8,7 +8,6 @@
 import Foundation
 
 struct Comment: Codable, Identifiable {
-    let id: String        // Corresponds to the MongoDB ObjectId for the comment
     let message: String   // The text content of the comment
     let createdAt: Date   // The creation date of the comment
     let createdBy: User   // The user who created the comment
