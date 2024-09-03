@@ -67,7 +67,7 @@ class PostService {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         // Assuming `token` contains the user ID or you have access to the user's ID
-        var body: [String: Any] = [
+        let body: [String: Any] = [
             "message": message,
             "createdBy": token,  // Assuming token is the user ID, replace if necessary
             "imgUrl": imgUrl ?? NSNull()
