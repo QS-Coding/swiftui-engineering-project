@@ -9,34 +9,53 @@ import SwiftUI
 
 struct WelcomePageView: View {
     var body: some View {
-        ZStack {
-            VStack {
-                Spacer()
-
-                Text("Welcome to Acebook!")
-                    .font(.largeTitle)
-                    .padding(.bottom, 20)
-                    .accessibilityIdentifier("welcomeText")
-
-                Spacer()
-
-                Image("makers-logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
-                    .accessibilityIdentifier("makers-logo")
-                
-                Spacer()
-
-                Button("Sign Up") {
-                    // TODO: sign up logic
+            NavigationView {
+                VStack {
+                    Spacer()
+                    
+                    Text("Acebook")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                    
+                    Spacer()
+                    
+                    Text("You are not logged in.\nPlease login or sign up")
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .background(Color.white.opacity(0.8))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                    
+                    HStack {
+                        NavigationLink(destination: SignUpView()) {
+                            Text("Sign Up")
+                                .foregroundColor(.blue)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.white.opacity(0.8))
+                                .cornerRadius(10)
+                                .padding(.horizontal, 5)
+                        }
+                        
+                        NavigationLink(destination: LoginView()) {
+                            Text("Login")
+                                .foregroundColor(.blue)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.white.opacity(0.8))
+                                .cornerRadius(10)
+                                .padding(.horizontal, 5)
+                        }
+                    }
+                    .padding()
+                    
+                    Spacer()
                 }
-                .accessibilityIdentifier("signUpButton")
-                
-                Spacer()
+                .background(Color.cyan)
+                .edgesIgnoringSafeArea(.all)
             }
         }
-    }
 }
 
 struct WelcomePageView_Previews: PreviewProvider {
