@@ -8,6 +8,7 @@
 import Foundation
 
 struct Post: Codable, Identifiable {
+    let id: String
     let message: String
     let createdAt: String
     let createdBy: User
