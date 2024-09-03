@@ -1,9 +1,3 @@
-//
-//  PostService.swift
-//  MobileAcebook
-//
-//  Created by Sam Quincey on 03/09/2024.
-//
 import UIKit
 import Foundation
 
@@ -14,91 +8,60 @@ class PostService {
     private init() {}
     
     // Fetch all posts
-    func fetchPosts(completion: @escaping ([Post]?, Error?) -> Void) {
-        guard let url = URL(string: "\(baseURL)/posts") else { return }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
-            
-            guard let data = data else {
-                completion(nil, NSError(domain: "DataError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data returned"]))
-                return
-            }
-            
-            do {
-                let posts = try JSONDecoder().decode([Post].self, from: data)
-                completion(posts, nil)
-            } catch let jsonError {
-                completion(nil, jsonError)
-            }
+    func fetchPosts() async throws -> [Post] {
+        guard let url = URL(string: "\(baseURL)/posts") else {
+            throw URLError(.badURL)
         }
         
-        task.resume()
+        let (data, _) = try await URLSession.shared.data(from: url)
+        
+        let posts = try JSONDecoder().decode([Post].self, from: data)
+        return posts
     }
     
     // Create a new post with optional image
-    func createPost(message: String, image: UIImage?, token: String, completion: @escaping (Bool, Error?) -> Void) {
+    func createPost(message: String, image: UIImage?, token: String) async throws -> Bool {
         if let image = image {
             // If the user selected an image, upload it to Cloudinary first
-            uploadImageToCloudinary(image: image) { url, error in
-                if let url = url {
-                    // After getting the image URL, create the post with the image
-                    self.createPostWithImage(message: message, imgUrl: url, token: token, completion: completion)
-                } else {
-                    completion(false, error)
-                }
-            }
+            let url = try await uploadImageToCloudinary(image: image)
+            // After getting the image URL, create the post with the image
+            return try await createPostWithImage(message: message, imgUrl: url, token: token)
         } else {
             // If no image was selected, create the post without an image
-            self.createPostWithImage(message: message, imgUrl: nil, token: token, completion: completion)
+            return try await createPostWithImage(message: message, imgUrl: nil, token: token)
         }
     }
     
     // Helper function to create post with or without image URL
-    private func createPostWithImage(message: String, imgUrl: String?, token: String, completion: @escaping (Bool, Error?) -> Void) {
-        guard let url = URL(string: "\(baseURL)/posts") else { return }
+    private func createPostWithImage(message: String, imgUrl: String?, token: String) async throws -> Bool {
+        guard let url = URL(string: "\(baseURL)/posts") else {
+            throw URLError(.badURL)
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        // Assuming `token` contains the user ID or you have access to the user's ID
         let body: [String: Any] = [
             "message": message,
             "createdBy": token,  // Assuming token is the user ID, replace if necessary
             "imgUrl": imgUrl ?? NSNull()
         ]
         
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
-            request.httpBody = jsonData
-        } catch let encodingError {
-            completion(false, encodingError)
-            return
-        }
+        let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
+        request.httpBody = jsonData
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(false, error)
-                return
-            }
-            
-            completion(true, nil)
-        }
+        let (_, response) = try await URLSession.shared.data(for: request)
         
-        task.resume()
+        return (response as? HTTPURLResponse)?.statusCode == 200
     }
     
     // Upload image to Cloudinary
-    private func uploadImageToCloudinary(image: UIImage, completion: @escaping (String?, Error?) -> Void) {
+    private func uploadImageToCloudinary(image: UIImage) async throws -> String {
         guard let cloudName = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_CLOUD_NAME") as? String,
               let uploadPreset = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_UPLOAD_PRESET") as? String else {
-            completion(nil, NSError(domain: "CloudinaryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cloudinary credentials not found."]))
-            return
+            throw NSError(domain: "CloudinaryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cloudinary credentials not found."])
         }
         
         let url = URL(string: "https://api.cloudinary.com/v1_1/\(cloudName)/image/upload")!
@@ -111,12 +74,10 @@ class PostService {
         
         var data = Data()
         
-        // Add your unsigned Cloudinary preset
         data.append("--\(boundary)\r\n".data(using: .utf8)!)
         data.append("Content-Disposition: form-data; name=\"upload_preset\"\r\n\r\n".data(using: .utf8)!)
         data.append("\(uploadPreset)\r\n".data(using: .utf8)!)
         
-        // Add image data
         if let imageData = image.jpegData(compressionQuality: 0.7) {
             data.append("--\(boundary)\r\n".data(using: .utf8)!)
             data.append("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
@@ -129,35 +90,21 @@ class PostService {
         
         request.httpBody = data
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
-            
-            guard let data = data else {
-                completion(nil, nil)
-                return
-            }
-            
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let url = json["secure_url"] as? String {
-                    completion(url, nil)
-                } else {
-                    completion(nil, nil)
-                }
-            } catch {
-                completion(nil, error)
-            }
-        }
+        let (responseData, _) = try await URLSession.shared.data(for: request)
         
-        task.resume()
+        if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any],
+           let url = json["secure_url"] as? String {
+            return url
+        } else {
+            throw NSError(domain: "CloudinaryError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to upload image."])
+        }
     }
-
+    
     // Update likes for a post
-    func updateLikes(postId: String, token: String, completion: @escaping (Bool, Error?) -> Void) {
-        guard let url = URL(string: "\(baseURL)/posts/\(postId)") else { return }
+    func updateLikes(postId: String, token: String) async throws -> Bool {
+        guard let url = URL(string: "\(baseURL)/posts/\(postId)") else {
+            throw URLError(.badURL)
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
@@ -166,25 +113,11 @@ class PostService {
         
         let body: [String: Any] = ["postId": postId]
         
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
-            request.httpBody = jsonData
-        } catch let encodingError {
-            completion(false, encodingError)
-            return
-        }
+        let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
+        request.httpBody = jsonData
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(false, error)
-                return
-            }
-            
-            completion(true, nil)
-        }
+        let (_, response) = try await URLSession.shared.data(for: request)
         
-        task.resume()
+        return (response as? HTTPURLResponse)?.statusCode == 200
     }
 }
-
-
