@@ -3,12 +3,12 @@ import Foundation
 
 class PostService {
     static let shared = PostService()
-    private let baseURL = "http://localhost:3000"
+    private static let baseURL = "http://localhost:3000"
     
     private init() {}
 
     // Fetch all posts
-    func fetchPosts() async throws -> [Post] {
+   static func fetchPosts() async throws -> [Post] {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
@@ -25,7 +25,7 @@ class PostService {
     }
     
     // Create a new post with optional image
-    func createPost(message: String, image: UIImage?) async throws -> Bool {
+    static func createPost(message: String, image: UIImage?) async throws -> Bool {
         if let image = image {
             // If the user selected an image, upload it to Cloudinary first
             let url = try await uploadImageToCloudinary(image: image)
@@ -38,7 +38,7 @@ class PostService {
     }
     
     // Helper function to create post with or without image URL
-    private func createPostWithImage(message: String, imgUrl: String?) async throws -> Bool {
+    static private func createPostWithImage(message: String, imgUrl: String?) async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
@@ -64,7 +64,7 @@ class PostService {
     }
     
     // Upload image to Cloudinary
-    private func uploadImageToCloudinary(image: UIImage) async throws -> String {
+    static private func uploadImageToCloudinary(image: UIImage) async throws -> String {
         guard let cloudName = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_CLOUD_NAME") as? String,
               let uploadPreset = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_UPLOAD_PRESET") as? String else {
             throw NSError(domain: "CloudinaryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cloudinary credentials not found."])
@@ -107,7 +107,7 @@ class PostService {
     }
     
     // Update likes for a post
-    func updateLikes(postId: String) async throws -> Bool {
+    static func updateLikes(postId: String) async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/posts/\(postId)") else {
             throw URLError(.badURL)
         }

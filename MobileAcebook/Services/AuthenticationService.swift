@@ -27,10 +27,13 @@ class AuthenticationService {
         UserDefaults.standard.removeObject(forKey: jwtTokenKey)
     }
     
-    // Login
+    // MARK: - Login
     
     func login(email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
-        guard let url = URL(string: "\(baseURL)/authentication") else { return }
+        guard let url = URL(string: "\(baseURL)/tokens") else {
+            completion(false, "Invalid URL")
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -57,37 +60,48 @@ class AuthenticationService {
                 return
             }
             
-            guard let data = data else {
+            guard let data = data, let httpResponse = response as? HTTPURLResponse else {
                 DispatchQueue.main.async {
                     completion(false, "No data received")
                 }
                 return
             }
             
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let token = json["token"] as? String {
-                    self.saveToken(token)
-                    DispatchQueue.main.async {
-                        completion(true, nil)
+            if (200...299).contains(httpResponse.statusCode) {
+                // Handle success response
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let token = json["token"] as? String {
+                        self.saveToken(token)
+                        DispatchQueue.main.async {
+                            completion(true, nil)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            completion(false, "Invalid login response")
+                        }
                     }
-                } else {
+                } catch {
                     DispatchQueue.main.async {
-                        completion(false, "Invalid login response")
+                        completion(false, "Error parsing response")
                     }
                 }
-            } catch {
+            } else {
+                // Handle HTTP error responses (e.g. 401 Unauthorized)
                 DispatchQueue.main.async {
-                    completion(false, "Error parsing response")
+                    completion(false, "Login failed with status code: \(httpResponse.statusCode)")
                 }
             }
         }.resume()
     }
     
-    // Sign Up
+    // MARK: - Sign Up
     
     func signUp(username: String, email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
-        guard let url = URL(string: "\(baseURL)/users") else { return }
+        guard let url = URL(string: "\(baseURL)/users") else {
+            completion(false, "Invalid URL")
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -115,27 +129,35 @@ class AuthenticationService {
                 return
             }
             
-            guard let data = data else {
+            guard let data = data, let httpResponse = response as? HTTPURLResponse else {
                 DispatchQueue.main.async {
                     completion(false, "No data received")
                 }
                 return
             }
             
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let message = json["message"] as? String, message.contains("created") {
-                    DispatchQueue.main.async {
-                        completion(true, nil)
+            if (200...299).contains(httpResponse.statusCode) {
+                // Handle success response
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let message = json["message"] as? String, message.contains("created") {
+                        DispatchQueue.main.async {
+                            completion(true, nil)
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            completion(false, "Invalid sign-up response")
+                        }
                     }
-                } else {
+                } catch {
                     DispatchQueue.main.async {
-                        completion(false, "Invalid sign-up response")
+                        completion(false, "Error parsing response")
                     }
                 }
-            } catch {
+            } else {
+                // Handle HTTP error responses (e.g. 400 Bad Request)
                 DispatchQueue.main.async {
-                    completion(false, "Error parsing response")
+                    completion(false, "Sign-up failed with status code: \(httpResponse.statusCode)")
                 }
             }
         }.resume()
