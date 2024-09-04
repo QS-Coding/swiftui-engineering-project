@@ -1,46 +1,101 @@
-//
-//  CreatePostView.swift
-//  MobileAcebook
-//
-//  Created by Maz on 03/09/2024.
-//
-
 import SwiftUI
 
 struct CreatePostView: View {
     @State private var userInput: String = ""
+    @State private var showAlert: Bool = false
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    @Environment(\.presentationMode) var presentationMode  // Handle modal dismissal
+
     var body: some View {
-        VStack(alignment: .center){
-            Text("Make a Post").font(.largeTitle).bold()
+        VStack(alignment: .center) {
+            HStack {
+                // Cancel Button to dismiss CreatePostView
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()  // Dismiss the view
+                }) {
+                    Text("Cancel")
+                        .foregroundColor(.blue)
+                }
+                .padding(.leading, 20)
+                Spacer()
+            }
+            .padding(.top, 20)
+
+            Spacer()
+
+            Text("Make a Post")
+                .font(.largeTitle)
+                .bold()
+                .padding(.bottom, 20)
+
+            // Post Text Field - Centered
             TextField(
                 "Post text, lorem ipsum day...",
                 text: $userInput,
                 axis: .vertical
-            ).textFieldStyle(.roundedBorder)
-                .lineLimit(10, reservesSpace: true)
-                .multilineTextAlignment(.leading)
-                .frame(minWidth: 100, maxWidth: 400, minHeight: 100, maxHeight: 250)
-//                .cornerRadius(40)
-            HStack(alignment: .center, spacing: 3){
-                Button("Add Image"){}
-                    .frame(width: 96, height: 64)
-                    .background(Color(red: 0, green: 0.48, blue: 1))
-                    .cornerRadius(40)
-                    .foregroundColor(.white)
-                
-                Spacer()
-                Button("Create Post"){}
-                    .frame(width: 96, height: 64)
-                    .background(Color(red: 0, green: 0.48, blue: 1))
-                    .cornerRadius(40)
-                    .foregroundColor(.white)
-                
-            }.padding(40)
-            
-        }.frame(maxHeight: 900)
-        .padding()
-            .background(Color(red: 0, green: 0.96, blue: 1))
-        
+            )
+            .textFieldStyle(.roundedBorder)
+            .lineLimit(10, reservesSpace: true)
+            .multilineTextAlignment(.leading)
+            .frame(minWidth: 100, maxWidth: 400, minHeight: 100, maxHeight: 250)
+            .padding(.horizontal, 20)
+
+            // Action Buttons - Centered
+            HStack(alignment: .center, spacing: 20) {
+                Button("Add Image") {
+                    // Add Image action if necessary
+                }
+                .frame(width: 120, height: 44)
+                .background(Color.blue)
+                .cornerRadius(40)
+                .foregroundColor(.white)
+
+                Button("Create Post") {
+                    // Create Post action
+                    Task {
+                        do {
+                            // The token is automatically handled in PostService, so no need to pass it manually
+                            _ = try await PostService.createPost(message: userInput, image: nil)
+                            
+                            // Show success alert
+                            alertTitle = "Post Created"
+                            alertMessage = "Your post has been created successfully."
+                            showAlert = true
+                            
+                        } catch {
+                            // Show error alert
+                            alertTitle = "Error"
+                            alertMessage = "Failed to create the post. Please try again."
+                            showAlert = true
+                        }
+                    }
+                }
+                .frame(width: 120, height: 44)
+                .background(Color.blue)
+                .cornerRadius(40)
+                .foregroundColor(.white)
+            }
+            .padding(.top, 30)
+
+            Spacer()
+
+            // Alert for showing success or error message
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text(alertTitle),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK"), action: {
+                        if alertTitle == "Post Created" {
+                            // Dismiss the CreatePostView modal and return to MainView
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
+                    })
+                )
+            }
+        }
+        .background(Color(red: 0, green: 0.96, blue: 1).ignoresSafeArea())  // Cover entire screen with background color
+        .navigationBarHidden(true)  // Hide default navigation bar
     }
 }
 

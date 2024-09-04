@@ -11,4 +11,11 @@ struct User: Codable, Identifiable {
     let email: String
     let username: String
     let imgUrl: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id" // Map the MongoDB _id to id in Swift
+        case email
+        case username
+        case imgUrl
+    }
 }

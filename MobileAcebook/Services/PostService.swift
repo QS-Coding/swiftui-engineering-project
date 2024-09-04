@@ -1,11 +1,18 @@
 import UIKit
 import Foundation
 
+// PostService to handle network requests related to posts
 class PostService {
     static let shared = PostService()
     private static let baseURL = "http://localhost:3000"
     
     private init() {}
+    
+    // Response struct to decode backend response that contains posts
+    struct PostResponse: Codable {
+        let posts: [Post]
+        let token: String?
+    }
 
     // Fetch all posts
     static func fetchPosts() async throws -> [Post] {
@@ -23,10 +30,15 @@ class PostService {
             
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    let posts = try JSONDecoder().decode([Post].self, from: data)
-                    return posts
+                    // Log the JSON data to debug
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("Response JSON: \(jsonString)")
+                    }
+                    
+                    // Decode the response object that includes the posts array
+                    let decodedResponse = try JSONDecoder().decode(PostResponse.self, from: data)
+                    return decodedResponse.posts // Extract the array of posts from the response object
                 } else {
-                    // Handle non-200 responses
                     let errorMessage = "Failed to fetch posts: HTTP \(httpResponse.statusCode)"
                     print(errorMessage)
                     throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])

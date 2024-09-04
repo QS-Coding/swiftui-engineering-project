@@ -32,6 +32,7 @@
 		F844A8B22C87480F007EA48A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B02C87480F007EA48A /* Comment.swift */; };
 		F844A8B62C874D56007EA48A /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B52C874D56007EA48A /* CreatePostView.swift */; };
 		F844A8B82C875538007EA48A /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B72C875538007EA48A /* DateExtension.swift */; };
+		F87BD8272C88AF5E0071F4D3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87BD8262C88AF5E0071F4D3 /* MainView.swift */; };
 		F8A25B612C884FF6009AE361 /* LogoutConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		F844A8B02C87480F007EA48A /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		F844A8B52C874D56007EA48A /* CreatePostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		F844A8B72C875538007EA48A /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		F87BD8262C88AF5E0071F4D3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutConfirmationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,6 +149,7 @@
 				F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */,
 				F8304C5C2C888BF000B4BBC9 /* FeedView.swift */,
 				F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */,
+				F87BD8262C88AF5E0071F4D3 /* MainView.swift */,
 			);
 			path = MobileAcebook;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				F844A8AD2C874802007EA48A /* CommentService.swift in Sources */,
 				F8304C5D2C888BF000B4BBC9 /* FeedView.swift in Sources */,
 				AE5D85B02AC8A221009680C6 /* MobileAcebookApp.swift in Sources */,
+				F87BD8272C88AF5E0071F4D3 /* MainView.swift in Sources */,
 				F83545452C875D9300AB9C9E /* FullPostViewModel.swift in Sources */,
 				F844A8B22C87480F007EA48A /* Comment.swift in Sources */,
 				F844A8AE2C874802007EA48A /* UserService.swift in Sources */,
