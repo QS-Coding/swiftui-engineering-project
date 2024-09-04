@@ -10,6 +10,9 @@ import SwiftUI
 struct CreatePostView: View {
     @State private var userInput: String = ""
     var body: some View {
+        
+     
+           
         VStack(alignment: .center){
             Text("Make a Post").font(.largeTitle).bold()
             TextField(
@@ -21,6 +24,7 @@ struct CreatePostView: View {
                 .multilineTextAlignment(.leading)
                 .frame(minWidth: 100, maxWidth: 400, minHeight: 100, maxHeight: 250)
 //                .cornerRadius(40)
+            
             HStack(alignment: .center, spacing: 3){
                 Button("Add Image"){}
                     .frame(width: 96, height: 64)
@@ -37,12 +41,18 @@ struct CreatePostView: View {
                 
             }.padding(40)
             
-        }.frame(maxHeight: 900)
+        }.frame(height: 800)
         .padding()
-            .background(Color(red: 0, green: 0.96, blue: 1))
+        .background(Color(red: 0, green: 0.96, blue: 1))
+        .navigationTitle("Create Post")
+        
+        
         
     }
+    
+    
 }
+
 
 #Preview {
     CreatePostView()

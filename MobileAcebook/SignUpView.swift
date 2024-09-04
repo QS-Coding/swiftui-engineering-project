@@ -97,8 +97,10 @@ struct SignUpView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 0, green: 0.96, blue: 1))
         .statusBar(hidden: false)
-    }
         
+       
+    }
+     
 }
 
 

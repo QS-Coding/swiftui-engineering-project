@@ -10,8 +10,19 @@ import SwiftUI
 @main
 struct MobileAcebookApp: App {
     var body: some Scene {
+        
         WindowGroup {
+            
             WelcomePageView()
+            
+            
         }
+    }
+}
+
+struct MobileAcebookApp_Previews: PreviewProvider {
+    static var previews: some View {
+        WelcomePageView()
+        
     }
 }
