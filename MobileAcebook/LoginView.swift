@@ -15,11 +15,11 @@ struct LoginView: View {
     }
     @State private var username: String = ""
     @State private var email: String = ""
-    @State private var password: String = ""
+
     var body: some View {
         
         VStack {
-            Text("Sign Up!")
+            Text("Login!")
             .font(
                 .system(size: 40, weight: .bold, design: .default))
             .multilineTextAlignment(.center)
@@ -49,20 +49,10 @@ struct LoginView: View {
                         .padding(.vertical, 15)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(.white.opacity(0.95))
-                        Spacer()
-                        TextField(
-                        "Enter Password",
-                        text: $password
-                        )
-                        .padding(.leading, 16)
-                        .padding(.trailing, 0)
-                        .padding(.vertical, 15)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                        .background(.white.opacity(0.95))
                 }
                 .padding(0)
                 .padding(.bottom)
-                .frame(width: 302, height: 242, alignment: .center)
+                .frame(width: 302, height: 180, alignment: .center)
                 .cornerRadius(10)
                 HStack(alignment: .center, spacing: 3) { Button(action: submit) {
                     Text("Sign Up!")
@@ -75,7 +65,7 @@ struct LoginView: View {
                 .background(Constants.ColorsBlue)
                 .cornerRadius(40)
                 
-                HStack(alignment: .center, spacing: 0) { Text("Already have an account? Login")
+                HStack(alignment: .center, spacing: 0) { Text("Don't have an account? \nLogin!")
                         .font(Font.custom("SF Pro", size: 18))
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color(red: 0, green: 0.48, blue: 1))
