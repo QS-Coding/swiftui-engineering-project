@@ -30,6 +30,7 @@
 		F844A8B22C87480F007EA48A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B02C87480F007EA48A /* Comment.swift */; };
 		F844A8B62C874D56007EA48A /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B52C874D56007EA48A /* CreatePostView.swift */; };
 		F844A8B82C875538007EA48A /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8B72C875538007EA48A /* DateExtension.swift */; };
+		F8A25B612C884FF6009AE361 /* LogoutConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		F844A8B02C87480F007EA48A /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		F844A8B52C874D56007EA48A /* CreatePostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		F844A8B72C875538007EA48A /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutConfirmationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				F844A8B52C874D56007EA48A /* CreatePostView.swift */,
 				F844A8B72C875538007EA48A /* DateExtension.swift */,
 				F83545462C875DAC00AB9C9E /* FullPostView.swift */,
+				F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */,
 			);
 			path = MobileAcebook;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				F844A8B12C87480F007EA48A /* Post.swift in Sources */,
 				F844A8B62C874D56007EA48A /* CreatePostView.swift in Sources */,
 				25F17D2F2C870CAD001CEF06 /* LoginView.swift in Sources */,
+				F8A25B612C884FF6009AE361 /* LogoutConfirmationView.swift in Sources */,
 				AE5D85E62AC9B077009680C6 /* AuthenticationServiceProtocol.swift in Sources */,
 				F844A8AC2C874802007EA48A /* PostService.swift in Sources */,
 				F844A8AD2C874802007EA48A /* CommentService.swift in Sources */,
