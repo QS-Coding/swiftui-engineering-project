@@ -10,7 +10,7 @@ class FullPostViewModel: ObservableObject {
     func fetchPost(postId: String, token: String) {
         Task {
             do {
-                let posts = try await PostService.shared.fetchPosts()
+                let posts = try await PostService.fetchPosts()
                 if let fetchedPost = posts.first(where: { $0.id == postId }) {
                     DispatchQueue.main.async {
                         self.post = fetchedPost
@@ -53,7 +53,7 @@ class FullPostViewModel: ObservableObject {
         
         Task {
             do {
-                let success = try await PostService.shared.updateLikes(postId: postId, token: token)
+                let success = try await PostService.updateLikes(postId: postId, token: token)
                 if !success {
                     // Revert the isLiked state on error
                     DispatchQueue.main.async {
