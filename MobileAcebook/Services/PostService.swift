@@ -6,34 +6,39 @@ class PostService {
     private let baseURL = "http://localhost:3000"
     
     private init() {}
-    
+
     // Fetch all posts
     func fetchPosts() async throws -> [Post] {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
         
-        let (data, _) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url)
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
         
         let posts = try JSONDecoder().decode([Post].self, from: data)
         return posts
     }
     
     // Create a new post with optional image
-    func createPost(message: String, image: UIImage?, token: String) async throws -> Bool {
+    func createPost(message: String, image: UIImage?) async throws -> Bool {
         if let image = image {
             // If the user selected an image, upload it to Cloudinary first
             let url = try await uploadImageToCloudinary(image: image)
             // After getting the image URL, create the post with the image
-            return try await createPostWithImage(message: message, imgUrl: url, token: token)
+            return try await createPostWithImage(message: message, imgUrl: url)
         } else {
             // If no image was selected, create the post without an image
-            return try await createPostWithImage(message: message, imgUrl: nil, token: token)
+            return try await createPostWithImage(message: message, imgUrl: nil)
         }
     }
     
     // Helper function to create post with or without image URL
-    private func createPostWithImage(message: String, imgUrl: String?, token: String) async throws -> Bool {
+    private func createPostWithImage(message: String, imgUrl: String?) async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
@@ -41,11 +46,12 @@ class PostService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let body: [String: Any] = [
             "message": message,
-            "createdBy": token,  // Assuming token is the user ID, replace if necessary
             "imgUrl": imgUrl ?? NSNull()
         ]
         
@@ -101,7 +107,7 @@ class PostService {
     }
     
     // Update likes for a post
-    func updateLikes(postId: String, token: String) async throws -> Bool {
+    func updateLikes(postId: String) async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/posts/\(postId)") else {
             throw URLError(.badURL)
         }
@@ -109,7 +115,9 @@ class PostService {
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let body: [String: Any] = ["postId": postId]
         

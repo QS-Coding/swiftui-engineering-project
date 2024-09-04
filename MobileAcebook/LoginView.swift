@@ -13,8 +13,10 @@ struct LoginView: View {
         print("Submitted")
     
     }
-    @State private var username: String = ""
     @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var errorMessage: String?
+    @State private var isLoggedIn: Bool = false
 
     var body: some View {
         
@@ -30,8 +32,8 @@ struct LoginView: View {
                 VStack {
                     
                         TextField(
-                        "Enter Username",
-                        text: $username
+                        "Enter Email",
+                        text: $email
                         )
                         .padding(.leading, 16)
                         .padding(.trailing, 0)
@@ -40,8 +42,8 @@ struct LoginView: View {
                         .background(.white.opacity(0.95))
                         .font(Font.custom("SF Pro", size: 17))
                         Spacer()
-                        TextField(
-                        "Enter Email",
+                        SecureField(
+                        "Enter Password",
                         text: $email
                         )
                         .padding(.leading, 16)
@@ -55,7 +57,7 @@ struct LoginView: View {
                 .frame(width: 302, height: 180, alignment: .center)
                 .cornerRadius(10)
                 HStack(alignment: .center, spacing: 3) { Button(action: submit) {
-                    Text("Sign Up!")
+                    Text("Login!")
                         .font(Font.custom("SF Pro", size: 20))
                         .foregroundColor(Constants.GraysWhite)
                 } }
