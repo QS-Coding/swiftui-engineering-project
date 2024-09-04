@@ -8,7 +8,7 @@ class PostService {
     private init() {}
 
     // Fetch all posts
-   static func fetchPosts() async throws -> [Post] {
+    static func fetchPosts() async throws -> [Post] {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
@@ -18,12 +18,28 @@ class PostService {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        let (data, _) = try await URLSession.shared.data(for: request)
-        
-        let posts = try JSONDecoder().decode([Post].self, from: data)
-        return posts
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    let posts = try JSONDecoder().decode([Post].self, from: data)
+                    return posts
+                } else {
+                    // Handle non-200 responses
+                    let errorMessage = "Failed to fetch posts: HTTP \(httpResponse.statusCode)"
+                    print(errorMessage)
+                    throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                }
+            } else {
+                throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+            }
+        } catch {
+            print("Error fetching posts: \(error)")
+            throw error
+        }
     }
-    
+
     // Create a new post with optional image
     static func createPost(message: String, image: UIImage?) async throws -> Bool {
         if let image = image {
@@ -58,9 +74,17 @@ class PostService {
         let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
         request.httpBody = jsonData
         
-        let (_, response) = try await URLSession.shared.data(for: request)
-        
-        return (response as? HTTPURLResponse)?.statusCode == 200
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse {
+                return httpResponse.statusCode == 200
+            } else {
+                throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+            }
+        } catch {
+            print("Error creating post: \(error)")
+            throw error
+        }
     }
     
     // Upload image to Cloudinary
@@ -126,6 +150,10 @@ class PostService {
         
         let (_, response) = try await URLSession.shared.data(for: request)
         
-        return (response as? HTTPURLResponse)?.statusCode == 200
+        if let httpResponse = response as? HTTPURLResponse {
+            return httpResponse.statusCode == 200
+        } else {
+            throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+        }
     }
 }

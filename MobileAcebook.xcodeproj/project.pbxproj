@@ -21,6 +21,8 @@
 		AE5D85E32AC9AFD2009680C6 /* MockAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5D85E22AC9AFD2009680C6 /* MockAuthenticationService.swift */; };
 		AE5D85E62AC9B077009680C6 /* AuthenticationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5D85E52AC9B077009680C6 /* AuthenticationServiceProtocol.swift */; };
 		AE5D85E82AC9B29A009680C6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5D85E72AC9B29A009680C6 /* User.swift */; };
+		F8304C5D2C888BF000B4BBC9 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8304C5C2C888BF000B4BBC9 /* FeedView.swift */; };
+		F8304C5F2C888C0500B4BBC9 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */; };
 		F83545452C875D9300AB9C9E /* FullPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83545442C875D9300AB9C9E /* FullPostViewModel.swift */; };
 		F83545472C875DAC00AB9C9E /* FullPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83545462C875DAC00AB9C9E /* FullPostView.swift */; };
 		F844A8AC2C874802007EA48A /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844A8A92C874802007EA48A /* PostService.swift */; };
@@ -68,6 +70,8 @@
 		AE5D85E22AC9AFD2009680C6 /* MockAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthenticationService.swift; sourceTree = "<group>"; };
 		AE5D85E52AC9B077009680C6 /* AuthenticationServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationServiceProtocol.swift; sourceTree = "<group>"; };
 		AE5D85E72AC9B29A009680C6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F8304C5C2C888BF000B4BBC9 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		F83545442C875D9300AB9C9E /* FullPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullPostViewModel.swift; sourceTree = "<group>"; };
 		F83545462C875DAC00AB9C9E /* FullPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullPostView.swift; sourceTree = "<group>"; };
 		F844A8A92C874802007EA48A /* PostService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostService.swift; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 				F844A8B72C875538007EA48A /* DateExtension.swift */,
 				F83545462C875DAC00AB9C9E /* FullPostView.swift */,
 				F8A25B602C884FF6009AE361 /* LogoutConfirmationView.swift */,
+				F8304C5C2C888BF000B4BBC9 /* FeedView.swift */,
+				F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */,
 			);
 			path = MobileAcebook;
 			sourceTree = "<group>";
@@ -345,11 +351,13 @@
 				F844A8B82C875538007EA48A /* DateExtension.swift in Sources */,
 				F844A8B12C87480F007EA48A /* Post.swift in Sources */,
 				F844A8B62C874D56007EA48A /* CreatePostView.swift in Sources */,
+				F8304C5F2C888C0500B4BBC9 /* PostCardView.swift in Sources */,
 				25F17D2F2C870CAD001CEF06 /* LoginView.swift in Sources */,
 				F8A25B612C884FF6009AE361 /* LogoutConfirmationView.swift in Sources */,
 				AE5D85E62AC9B077009680C6 /* AuthenticationServiceProtocol.swift in Sources */,
 				F844A8AC2C874802007EA48A /* PostService.swift in Sources */,
 				F844A8AD2C874802007EA48A /* CommentService.swift in Sources */,
+				F8304C5D2C888BF000B4BBC9 /* FeedView.swift in Sources */,
 				AE5D85B02AC8A221009680C6 /* MobileAcebookApp.swift in Sources */,
 				F83545452C875D9300AB9C9E /* FullPostViewModel.swift in Sources */,
 				F844A8B22C87480F007EA48A /* Comment.swift in Sources */,
