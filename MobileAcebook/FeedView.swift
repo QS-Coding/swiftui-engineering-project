@@ -7,15 +7,22 @@
 
 import Foundation
 import SwiftUI
-
+func like() -> Void {
+    print("liked")
+}
 var fakeData = [
-    Post(id:"1", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"]),
-    Post(id:"1", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"]),
-    Post(id:"1", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"]),
-    Post(id:"1", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"])
+    Post(id:"1", message: "Just had a great date at the beach ashdbhjasdbcvhasdbfjhbasdhjfbhasdbfjhbasdhjfbdsajhbfjhsdiuhfuihsdauihfoashdufhuhhhhhsdfluihasdlkhfuilahsduhfuahsdfulhaksldhfjkashdfjauskdhfauksldhfuahsdukfhasukdhfukasldhfuhasdkulhfkuasdhfuhasdukflhkaushdfukhasudkfhuklashdfukhasdukfhukasdlhf", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["1"]),
+    Post(id:"2", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"]),
+    Post(id:"3", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"]),
+    Post(id:"4", message: "Test", createdAt: "Now", createdBy: User(id: "1", email: "test", username: "Will", imgUrl: ""), imgUrl: "", likes: ["Will"])
 ]
 
-
+func checkIfLiked(userId: String, post: Post) -> Bool {
+    if post.likes.contains(userId) {
+        return true
+    }
+    return false
+}
 
 struct PostView: View {
     let post: Post
@@ -28,22 +35,20 @@ struct PostView: View {
                     .frame(width: 192, height: 217)
                     .background(Color(red: 0.85, green: 0.85, blue: 0.85))
                     .cornerRadius(48)
+                    .padding(.trailing, 140)
                 Text("\(post.message)")
                     .font(Font.custom("SF Pro", size: 17))
                     .foregroundColor(.black)
                     .frame(width: 135, height: 137, alignment: .topLeading)
-                HStack(alignment: .center, spacing: 3) {
-                    Text("􀊴")
-                        .font(Font.custom("SF Pro", size: 48))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
-                        .frame(width: 53, height: 56, alignment: .center)
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
-                .background(Color(red: 0, green: 0.48, blue: 1).opacity(0))
-                
-                .cornerRadius(40)
+                    .padding(.leading, 200)
+                Image(systemName: checkIfLiked(userId: post.id, post: post) ? "heart.fill" : "heart" )
+                    .resizable()
+                    .frame(width: 35, height: 35)
+                    .foregroundColor(checkIfLiked(userId: post.id, post: post) ? .red : .black)
+                    .padding(.top, 200)
+                    .padding(.leading, 200)
+                    
+                    
             }
             
             
