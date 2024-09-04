@@ -43,7 +43,7 @@ struct LogoutConfirmationView: View {
             .padding([.leading, .trailing, .bottom], 20)
         }
         .frame(width: 300, height: 150)
-        .background(Color.gray.opacity(0.3))
+        .background(Color.white.opacity(0.95))
         .cornerRadius(10)
         .shadow(radius: 10)
     }
