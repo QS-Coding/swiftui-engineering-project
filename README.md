@@ -8,7 +8,7 @@ Karina, Maz, Robert, Sam and Will
 This repo contains the project for a Swift-UI frontend application consuming an Express backend that lives [here](https://github.com/QS-Coding/Mobile-Acebook)
 
 ## Installation
- 1. Clone the front-end and back-end repos to your local machine
+ 1. Clone the front-end and [back-end](https://github.com/QS-Coding/Mobile-Acebook) repos to your local machine
  2. Navigate to /api in the backend and run `npm install`
  3. Create .env file in /api and add `MONGODB_URL` and `JWT_SECRET` environment variables
  4. Start backend server with command `npm start`
