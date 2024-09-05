@@ -1,10 +1,3 @@
-//
-//  LogoutConfirmationView.swift
-//  MobileAcebook
-//
-//  Created by Sam Quincey on 04/09/2024.
-//
-
 import SwiftUI
 
 struct LogoutConfirmationView: View {
@@ -33,7 +26,7 @@ struct LogoutConfirmationView: View {
                 
                 Button(action: {
                     // Perform the logout action
-                    onLogout()
+                    onLogout()  // Log out the user and navigate back
                 }) {
                     Text("Log me out")
                         .foregroundColor(.blue)
@@ -43,7 +36,7 @@ struct LogoutConfirmationView: View {
             .padding([.leading, .trailing, .bottom], 20)
         }
         .frame(width: 300, height: 150)
-        .background(Color.gray.opacity(0.3))
+        .background(Color.white.opacity(0.85))
         .cornerRadius(10)
         .shadow(radius: 10)
     }

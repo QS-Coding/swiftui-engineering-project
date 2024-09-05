@@ -1,39 +1,72 @@
 import UIKit
 import Foundation
 
+// PostService to handle network requests related to posts
 class PostService {
     static let shared = PostService()
-    private let baseURL = "http://localhost:3000"
+    private static let baseURL = "http://localhost:3000"
     
     private init() {}
     
+    // Response struct to decode backend response that contains posts
+    struct PostResponse: Codable {
+        let posts: [Post]
+        let token: String?
+    }
+
     // Fetch all posts
-    func fetchPosts() async throws -> [Post] {
+    static func fetchPosts() async throws -> [Post] {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
         
-        let (data, _) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url)
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
-        let posts = try JSONDecoder().decode([Post].self, from: data)
-        return posts
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    // Log the JSON data to debug
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("Response JSON: \(jsonString)")
+                    }
+                    
+                    // Decode the response object that includes the posts array
+                    let decodedResponse = try JSONDecoder().decode(PostResponse.self, from: data)
+                    return decodedResponse.posts // Extract the array of posts from the response object
+                } else {
+                    let errorMessage = "Failed to fetch posts: HTTP \(httpResponse.statusCode)"
+                    print(errorMessage)
+                    throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                }
+            } else {
+                throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+            }
+        } catch {
+            print("Error fetching posts: \(error)")
+            throw error
+        }
     }
-    
+
     // Create a new post with optional image
-    func createPost(message: String, image: UIImage?, token: String) async throws -> Bool {
+    static func createPost(message: String, image: UIImage?) async throws -> Bool {
         if let image = image {
             // If the user selected an image, upload it to Cloudinary first
             let url = try await uploadImageToCloudinary(image: image)
             // After getting the image URL, create the post with the image
-            return try await createPostWithImage(message: message, imgUrl: url, token: token)
+            return try await createPostWithImage(message: message, imgUrl: url)
         } else {
             // If no image was selected, create the post without an image
-            return try await createPostWithImage(message: message, imgUrl: nil, token: token)
+            return try await createPostWithImage(message: message, imgUrl: nil)
         }
     }
     
     // Helper function to create post with or without image URL
-    private func createPostWithImage(message: String, imgUrl: String?, token: String) async throws -> Bool {
+    static private func createPostWithImage(message: String, imgUrl: String?) async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/posts") else {
             throw URLError(.badURL)
         }
@@ -41,24 +74,33 @@ class PostService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let body: [String: Any] = [
             "message": message,
-            "createdBy": token,  // Assuming token is the user ID, replace if necessary
             "imgUrl": imgUrl ?? NSNull()
         ]
         
         let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
         request.httpBody = jsonData
         
-        let (_, response) = try await URLSession.shared.data(for: request)
-        
-        return (response as? HTTPURLResponse)?.statusCode == 200
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse {
+                return httpResponse.statusCode == 200
+            } else {
+                throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+            }
+        } catch {
+            print("Error creating post: \(error)")
+            throw error
+        }
     }
     
     // Upload image to Cloudinary
-    private func uploadImageToCloudinary(image: UIImage) async throws -> String {
+    static private func uploadImageToCloudinary(image: UIImage) async throws -> String {
         guard let cloudName = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_CLOUD_NAME") as? String,
               let uploadPreset = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_UPLOAD_PRESET") as? String else {
             throw NSError(domain: "CloudinaryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cloudinary credentials not found."])
@@ -101,7 +143,7 @@ class PostService {
     }
     
     // Update likes for a post
-    func updateLikes(postId: String, token: String) async throws -> Bool {
+    static func updateLikes(postId: String) async throws -> Bool {
         guard let url = URL(string: "\(baseURL)/posts/\(postId)") else {
             throw URLError(.badURL)
         }
@@ -109,7 +151,9 @@ class PostService {
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let body: [String: Any] = ["postId": postId]
         
@@ -118,6 +162,10 @@ class PostService {
         
         let (_, response) = try await URLSession.shared.data(for: request)
         
-        return (response as? HTTPURLResponse)?.statusCode == 200
+        if let httpResponse = response as? HTTPURLResponse {
+            return httpResponse.statusCode == 200
+        } else {
+            throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+        }
     }
 }

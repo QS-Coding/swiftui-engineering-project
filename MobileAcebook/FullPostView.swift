@@ -155,7 +155,9 @@ struct FullPostView: View {
                         .resizable()
                         .frame(width: 24, height: 24)
                         .foregroundColor(viewModel.isLiked ? .red : .black)
-                    Text(viewModel.isLiked ? "Liked" : "Like")
+                    
+                    // Show the number of likes
+                    Text("\(viewModel.post?.likes.count ?? 0)")
                         .font(.body)
                         .foregroundColor(viewModel.isLiked ? .red : .black)
                 }
