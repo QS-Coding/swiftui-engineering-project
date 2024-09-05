@@ -30,12 +30,10 @@ struct WelcomePageView: View {
                             navigateToSignUp = true
                         }) {
                             Text("Sign Up")
-                                .foregroundColor(.blue)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.white.opacity(0.8))
-                                .cornerRadius(10)
-                                .padding(.horizontal, 5)
+                                .frame(width: 177, height: 54)
+                                .background(Color.blue)
+                                .cornerRadius(40)
+                                .foregroundColor(.white)
                         }
                     }
 
@@ -45,12 +43,10 @@ struct WelcomePageView: View {
                             navigateToLogin = true
                         }) {
                             Text("Login")
-                                .foregroundColor(.blue)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.white.opacity(0.8))
-                                .cornerRadius(10)
-                                .padding(.horizontal, 5)
+                                .frame(width: 177, height: 54)
+                                .background(Color.blue)
+                                .cornerRadius(40)
+                                .foregroundColor(.white)
                         }
                     }
                 }
@@ -58,7 +54,7 @@ struct WelcomePageView: View {
 
                 Spacer()
             }
-            .background(Color.cyan)
+            .background(Color(red: 0, green: 0.96, blue: 1).ignoresSafeArea())
             .navigationBarHidden(true)  // Hide navigation bar for welcome screen
         }
     }
