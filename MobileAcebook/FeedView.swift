@@ -67,6 +67,9 @@ struct FeedView: View {
 struct PostView: View {
     let post: Post
     @State private var showFullPostView = false  // State to control showing FullPostView
+    @State private var isLiked: Bool = false     // Track the current like status
+    @State private var likesCount: Int = 0       // Track the number of likes
+    @State private var currentUserId: String = AuthenticationService.shared.getUserId() ?? ""
 
     var body: some View {
         ZStack {
@@ -110,28 +113,71 @@ struct PostView: View {
                 .padding(.leading, 200)
 
             // Heart icon to show like status
-            Image(systemName: checkIfLiked(userId: post.id, post: post) ? "heart.fill" : "heart")
+            Image(systemName: isLiked ? "heart.fill" : "heart")
                 .resizable()
                 .frame(width: 35, height: 35)
-                .foregroundColor(checkIfLiked(userId: post.id, post: post) ? .red : .black)
+                .foregroundColor(isLiked ? .red : .black)
                 .padding(.top, 200)
                 .padding(.leading, 200)
+                .onTapGesture {
+                    toggleLike()
+                }
         }
         .frame(width: 393, height: 259)
         .background(.white)
         .cornerRadius(48)
+        .onAppear {
+            // Set the initial like status and likes count
+            isLiked = checkIfLiked(userId: currentUserId, post: post)
+            likesCount = post.likes.count
+        }
         .fullScreenCover(isPresented: $showFullPostView) {
-            // Show FullPostView in full screen when triggered
             FullPostView(postId: post.id, token: AuthenticationService.shared.getToken() ?? "")
         }
     }
-}
+    
+    // Function to toggle the like state and call the backend
+    private func toggleLike() {
+        Task {
+            // Optimistically toggle the like state
+            isLiked.toggle()
+            if isLiked {
+                likesCount += 1
+            } else {
+                likesCount -= 1
+            }
 
+            do {
+                let success = try await PostService.updateLikes(postId: post.id)
+                if !success {
+                    // Revert the like state if the backend update fails
+                    isLiked.toggle()
+                    if isLiked {
+                        likesCount += 1
+                    } else {
+                        likesCount -= 1
+                    }
+                }
+            } catch {
+                // Handle error and revert like state if needed
+                print("Error updating likes: \(error.localizedDescription)")
+                isLiked.toggle()
+                if isLiked {
+                    likesCount += 1
+                } else {
+                    likesCount -= 1
+                }
+            }
+        }
+    }
+}
 
 // Helper function to check if a post is liked
 func checkIfLiked(userId: String, post: Post) -> Bool {
     return post.likes.contains(userId)
 }
+
+
 
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {

@@ -10,7 +10,7 @@ struct FullPostView: View {
     @State private var submissionError: Bool = false  // Handle errors during comment submission
     
     @Environment(\.dismiss) private var dismiss  // For dismissing the view
-    
+
     var body: some View {
         VStack {
             // Dismiss button
@@ -221,5 +221,5 @@ struct FullPostView: View {
         }
         .padding(.horizontal)
     }
-}
 
+}
