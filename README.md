@@ -10,12 +10,25 @@ This repo contains the project for a Swift-UI frontend application consuming an 
 ## Installation
  1. Clone the front-end and [back-end](https://github.com/QS-Coding/Mobile-Acebook) repos to your local machine
  2. Navigate to /api in the backend and run `npm install`
- 3. Create .env file in /api and add `MONGODB_URL` and `JWT_SECRET` environment variables
- 4. Start backend server with command `npm start`
- 5. Open frontend folder with XCode
- 6. Build Swift app using XCode's top menu -> Product -> Build
- 7. Run Swift app using XCode's top menu -> Product -> Run
- 8. Simulator window will appear with app running
+ 3. Install MongoDB (ONLY IF YOU HAVEN'T ALREADY - skip this step if so, to avoid running into issues)
+   ```
+   brew tap mongodb/brew
+   brew install mongodb-community@6.0
+   ```
+   *Note:* If you see a message that says `If you need to have
+   mongodb-community@5.0 first in your PATH, run:`, follow the instruction.
+   Restart your terminal after this.
+   
+ 4. Start MongoDB
+   ```
+   brew services start mongodb-community@6.0
+   ```
+ 5. Create .env file in /api and add `MONGODB_URL` and `JWT_SECRET` environment variables
+ 6. Start backend server with command `npm run dev`
+ 7. Open frontend folder with XCode
+ 8. Build Swift app using XCode's top menu -> Product -> Build
+ 9. Run Swift app using XCode's top menu -> Product -> Run
+ 10. Simulator window will appear with app running
 
 ## Usage
 1. App allows user to Signup / Login
