@@ -22,6 +22,7 @@ class PostService {
         
         var request = URLRequest(url: url)
         if let token = AuthenticationService.shared.getToken() {
+            print(token)
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
