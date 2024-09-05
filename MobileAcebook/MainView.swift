@@ -4,6 +4,7 @@ struct MainView: View {
     @State private var isLogoutPopupShowing = false  // Control logout pop-up visibility
     @State private var showCreatePostView = false  // Control showing the Create Post view
     @State private var navigateToWelcome = false   // Handle navigation to WelcomePageView after logout
+    @State private var shouldRefreshFeed = false   // Trigger feed refresh
 
     init() {
         // Configure tab bar appearance
@@ -18,8 +19,8 @@ struct MainView: View {
 
     var body: some View {
         ZStack {
-            // Show Feed by default
-            FeedView()
+            // Show Feed and pass in the refresh control
+            FeedView(shouldRefresh: $shouldRefreshFeed)
 
             VStack {
                 Spacer() // Pushes the tab bar to the bottom
@@ -50,9 +51,10 @@ struct MainView: View {
                     }
                     Spacer()
 
-                    // Refresh Button (Placeholder action)
+                    // Refresh Button (Triggers feed refresh)
                     Button(action: {
                         print("Refreshing feed...")
+                        shouldRefreshFeed = true  // Set refresh flag to true
                     }) {
                         VStack {
                             Image(systemName: "arrow.clockwise")
@@ -86,11 +88,5 @@ struct MainView: View {
         // Ensure the navigation bar is hidden
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-    }
-}
-
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
     }
 }

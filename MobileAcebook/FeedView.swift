@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct FeedView: View {
+    @Binding var shouldRefresh: Bool  // Use binding to trigger refresh
     @State private var posts: [Post] = []  // To store the fetched posts
     @State private var isLoading: Bool = true  // To show loading state
     @State private var errorMessage: String?  // To handle and show errors
@@ -33,6 +34,12 @@ struct FeedView: View {
         .onAppear {
             fetchPosts()  // Fetch posts when the view appears
         }
+        .onChange(of: shouldRefresh) { newValue in
+            if newValue {
+                fetchPosts()  // Refetch posts when shouldRefresh is true
+                shouldRefresh = false  // Reset the refresh flag
+            }
+        }
         .background(Color(red: 0, green: 0.48, blue: 1).opacity(0.28))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -57,13 +64,10 @@ struct FeedView: View {
     }
 }
 
-#Preview {
-    FeedView()
-}
-
 struct PostView: View {
     let post: Post
-    
+    @State private var showFullPostView = false  // State to control showing FullPostView
+
     var body: some View {
         ZStack {
             // The grey background placeholder or image
@@ -74,12 +78,18 @@ struct PostView: View {
                         .frame(width: 192, height: 217)  // Same size as before
                         .cornerRadius(48)
                         .padding(.trailing, 140)  // Image aligned to left with padding
+                        .onTapGesture {
+                            showFullPostView.toggle()  // Show FullPostView when tapped
+                        }
                 } placeholder: {
                     Rectangle()
                         .foregroundColor(Color.gray.opacity(0.3))
                         .frame(width: 192, height: 217)
                         .cornerRadius(48)
                         .padding(.trailing, 140)
+                        .onTapGesture {
+                            showFullPostView.toggle()  // Show FullPostView even if no image is present
+                        }
                 }
             } else {
                 Rectangle()
@@ -87,6 +97,9 @@ struct PostView: View {
                     .frame(width: 192, height: 217)
                     .cornerRadius(48)
                     .padding(.trailing, 140)
+                    .onTapGesture {
+                        showFullPostView.toggle()  // Show FullPostView if no image is present
+                    }
             }
 
             // Post message on the right side
@@ -107,8 +120,13 @@ struct PostView: View {
         .frame(width: 393, height: 259)
         .background(.white)
         .cornerRadius(48)
+        .fullScreenCover(isPresented: $showFullPostView) {
+            // Show FullPostView in full screen when triggered
+            FullPostView(postId: post.id, token: AuthenticationService.shared.getToken() ?? "")
+        }
     }
 }
+
 
 // Helper function to check if a post is liked
 func checkIfLiked(userId: String, post: Post) -> Bool {
@@ -117,6 +135,6 @@ func checkIfLiked(userId: String, post: Post) -> Bool {
 
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
-        FeedView()
+        FeedView(shouldRefresh: .constant(false))
     }
 }
