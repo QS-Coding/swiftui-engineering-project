@@ -1,92 +1,108 @@
-//
-//  LoginView.swift
-//  MobileAcebook
-//
-//  Created by William Alexander on 03/09/2024.
-//
-
-import Foundation
 import SwiftUI
 
 struct LoginView: View {
-    func submit() -> Void {
-        print("Submitted")
-    
-    }
-    @State private var username: String = ""
     @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var errorMessage: String?
+    @State private var isLoggedIn: Bool = false
+    @State private var isSignUpViewPresented: Bool = false  // State to trigger SignUpView presentation
+
+    func submit() {
+        AuthenticationService.shared.login(email: email.lowercased(), password: password) { success, error in
+            if success {
+                DispatchQueue.main.async {
+                    print("User logged in successfully")
+                    isLoggedIn = true
+                }
+            } else {
+                DispatchQueue.main.async {
+                    errorMessage = error
+                }
+            }
+        }
+    }
 
     var body: some View {
-        
         VStack {
             Text("Login!")
-            .font(
-                .system(size: 40, weight: .bold, design: .default))
-            .multilineTextAlignment(.center)
-            .foregroundColor(.black)
+                .font(.system(size: 40, weight: .bold))
+                .multilineTextAlignment(.center)
+                .foregroundColor(.black)
+                .frame(width: 288, height: 79, alignment: .center)
 
-            .frame(width: 288, height: 79, alignment: .center)
             VStack {
                 VStack {
-                    
-                        TextField(
-                        "Enter Username",
-                        text: $username
-                        )
+                    // Email input field
+                    TextField("Enter Email", text: $email)
+                        .onChange(of: email) { newValue in
+                            email = newValue.lowercased()
+                        }
                         .padding(.leading, 16)
-                        .padding(.trailing, 0)
                         .padding(.vertical, 15)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
-                        .background(.white.opacity(0.95))
-                        .font(Font.custom("SF Pro", size: 17))
-                        Spacer()
-                        TextField(
-                        "Enter Email",
-                        text: $email
-                        )
+                        .background(Color.white.opacity(0.95))
+                        .font(.system(size: 17))
+
+                    // Password input field
+                    SecureField("Enter Password", text: $password)
                         .padding(.leading, 16)
-                        .padding(.trailing, 0)
                         .padding(.vertical, 15)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
-                        .background(.white.opacity(0.95))
+                        .background(Color.white.opacity(0.95))
                 }
-                .padding(0)
-                .padding(.bottom)
-                .frame(width: 302, height: 180, alignment: .center)
+                .frame(width: 302, height: 180)
                 .cornerRadius(10)
-                HStack(alignment: .center, spacing: 3) { Button(action: submit) {
-                    Text("Sign Up!")
-                        .font(Font.custom("SF Pro", size: 20))
-                        .foregroundColor(Constants.GraysWhite)
-                } }
+
+                // Show error message if any
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+
+                // Login button
+                Button(action: submit) {
+                    Text("Login!")
+                        .font(.system(size: 20))
+                        .foregroundColor(.white)
+                }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .frame(width: 113, height: 48, alignment: .center)
-                .background(Constants.ColorsBlue)
+                .frame(width: 113, height: 48)
+                .background(Color.blue)
                 .cornerRadius(40)
-                
-                HStack(alignment: .center, spacing: 0) { Text("Don't have an account? \nLogin!")
-                        .font(Font.custom("SF Pro", size: 18))
+
+                // Sign-up prompt
+                Button(action: {
+                    isSignUpViewPresented = true
+                }) {
+                    Text("Don't have an account? Sign up!")
+                        .font(.system(size: 18))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(Color(red: 0, green: 0.48, blue: 1))
-                        .frame(width: 272, height: 43, alignment: .top) }
-                .padding(0)
-                .frame(width: 272, height: 43, alignment: .center)
+                        .foregroundColor(Color.blue)
+                }
+                .padding(.top, 10)
+
+                // Navigation to MainView after login
+                NavigationLink(destination: MainView(), isActive: $isLoggedIn) {
+                    EmptyView()
+                }
+
+                // Navigation to SignUpView
+                NavigationLink(destination: SignUpView(), isActive: $isSignUpViewPresented) {
+                    EmptyView()
+                }
             }
             .frame(width: 335, height: 432)
-            .background(.white.opacity(0.75))
-            
+            .background(Color.white.opacity(0.75))
             .cornerRadius(48)
         }
-        
-        
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 0, green: 0.96, blue: 1))
-        .statusBar(hidden: false)
+        .navigationBarBackButtonHidden(true)
     }
-        
 }
-
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {

@@ -10,7 +10,7 @@ class FullPostViewModel: ObservableObject {
     func fetchPost(postId: String, token: String) {
         Task {
             do {
-                let posts = try await PostService.shared.fetchPosts()
+                let posts = try await PostService.fetchPosts() // Static call
                 if let fetchedPost = posts.first(where: { $0.id == postId }) {
                     DispatchQueue.main.async {
                         self.post = fetchedPost
@@ -32,39 +32,41 @@ class FullPostViewModel: ObservableObject {
     }
     
     func fetchComments(postId: String, token: String) {
-        // Assuming CommentService is not async yet, but if it is, similar changes as fetchPost can be done.
-        CommentService.shared.fetchComments(forPostId: postId, token: token) { [weak self] comments, error in
+        CommentService.shared.fetchComments(forPostId: postId) { [weak self] comments, error in
             guard let self = self else { return }
-            if let comments = comments {
+
+            if let error = error {
                 DispatchQueue.main.async {
-                    self.comments = comments
+                    print("Error fetching comments: \(error)")
+                    self.hasError = true
                 }
-            } else if let error = error {
-                print("Error fetching comments: \(error)")
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.comments = comments ?? []
+                self.hasError = false
             }
         }
     }
     
     func toggleLike(postId: String, token: String) {
         guard post != nil else { return }
-        
-        // Toggle the isLiked state locally
-        isLiked.toggle()
-        
+
+        isLiked.toggle()  // Toggle the isLiked state locally
+
         Task {
             do {
-                let success = try await PostService.shared.updateLikes(postId: postId, token: token)
+                let success = try await PostService.updateLikes(postId: postId) // Static call
                 if !success {
-                    // Revert the isLiked state on error
                     DispatchQueue.main.async {
-                        self.isLiked.toggle()
+                        self.isLiked.toggle()  // Revert the isLiked state on failure
                     }
                 }
             } catch {
                 print("Error updating likes: \(error)")
-                // Revert the isLiked state on error
                 DispatchQueue.main.async {
-                    self.isLiked.toggle()
+                    self.isLiked.toggle()  // Revert the isLiked state on error
                 }
             }
         }

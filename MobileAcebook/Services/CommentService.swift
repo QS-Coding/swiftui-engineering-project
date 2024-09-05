@@ -1,10 +1,3 @@
-//
-//  CommentService.swift
-//  MobileAcebook
-//
-//  Created by Sam Quincey on 03/09/2024.
-//
-
 import Foundation
 
 class CommentService {
@@ -12,14 +5,16 @@ class CommentService {
     private let baseURL = "http://localhost:3000"
     
     private init() {}
-    
+
     // Fetch comments for a specific post
-    func fetchComments(forPostId postId: String, token: String, completion: @escaping ([Comment]?, Error?) -> Void) {
+    func fetchComments(forPostId postId: String, completion: @escaping ([Comment]?, Error?) -> Void) {
         guard let url = URL(string: "\(baseURL)/comments/\(postId)") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -44,19 +39,19 @@ class CommentService {
     }
     
     // Create a new comment for a specific post
-    func createComment(message: String, forPostId postId: String, token: String, completion: @escaping (Bool, Error?) -> Void) {
+    func createComment(message: String, forPostId postId: String, completion: @escaping (Bool, Error?) -> Void) {
         guard let url = URL(string: "\(baseURL)/comments/\(postId)") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if let token = AuthenticationService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let body: [String: Any] = [
             "message": message,
-            "createdBy": token,
-            "underPost": postId,
-            "createdAt": Date().iso8601String() // Assuming you have a Date extension for ISO 8601 format
+            "createdAt": Date().iso8601String()
         ]
         
         do {
@@ -79,4 +74,3 @@ class CommentService {
         task.resume()
     }
 }
-

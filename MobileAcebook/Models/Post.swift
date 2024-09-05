@@ -11,7 +11,17 @@ struct Post: Codable, Identifiable {
     let id: String
     let message: String
     let createdAt: String
-    let createdBy: User
+    let createdBy: User // The user data associated with the post
     let imgUrl: String?
-    let likes: [String] // List of user IDs who liked the post
+    let likes: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"  // Map MongoDB _id to id in Swift
+        case message
+        case createdAt
+        case createdBy
+        case imgUrl
+        case likes
+    }
 }
+
