@@ -1,9 +1,3 @@
-//
-//  FullPostView.swift
-//  MobileAcebook
-//
-//  Created by Sam Quincey on 03/09/2024.
-//
 import SwiftUI
 
 struct FullPostView: View {
@@ -11,12 +5,33 @@ struct FullPostView: View {
     let postId: String
     let token: String
     
+    @State private var commentText: String = ""  // To store the new comment text
+    @State private var isAddingComment = false  // To track comment submission
+    @State private var submissionError: Bool = false  // Handle errors during comment submission
+    
+    @Environment(\.dismiss) private var dismiss  // For dismissing the view
+    
     var body: some View {
         VStack {
+            // Dismiss button
+            HStack {
+                Button(action: {
+                    dismiss()  // Close the view when tapped
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.black)
+                        .padding(.leading, 20)
+                        .padding(.top, 10)
+                }
+                Spacer()
+            }
+
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     if viewModel.hasError {
-                        mockPostView
+                        mockPostView  // If there's an error, show the mock post
                     } else if let post = viewModel.post {
                         // Display the image and message...
                         if let imageUrl = post.imgUrl {
@@ -76,23 +91,54 @@ struct FullPostView: View {
                 }
             }
             
-            // Add Comment Button
-            HStack {
-                Spacer()
-                Button(action: {
-                    // Handle adding a comment (e.g., show a sheet or navigate to a new view)
-                }) {
-                    Image(systemName: "plus.circle.fill")
-                        .resizable()
-                        .frame(width: 44, height: 44)
-                        .foregroundColor(.blue)
+            // Add Comment Section
+            VStack {
+                HStack {
+                    TextField("Add a comment...", text: $commentText)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(height: 44)
+                        .padding(.horizontal)
+                    
+                    Button(action: {
+                        if !commentText.isEmpty {
+                            isAddingComment = true
+                            submissionError = false  // Reset any previous submission error
+                            CommentService.shared.createComment(message: commentText, forPostId: postId) { success, error in
+                                if success {
+                                    // Comment added successfully, now refresh the comments
+                                    viewModel.fetchComments(postId: postId, token: token)
+                                    commentText = ""  // Clear the text field
+                                } else {
+                                    // Handle error during comment submission
+                                    submissionError = true
+                                }
+                                isAddingComment = false
+                            }
+                        }
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .resizable()
+                            .frame(width: 44, height: 44)
+                            .foregroundColor(.blue)
+                    }
+                    .disabled(isAddingComment)  // Disable button when adding comment
+                    .padding(.trailing)
                 }
-                Spacer().frame(width: 20)
+                .padding(.horizontal)
+                
+                // Show error message if comment submission fails
+                if submissionError {
+                    Text("Failed to submit comment. Please try again.")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.horizontal)
+                }
             }
             .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            // Fetch the post and comments when the view appears
             viewModel.fetchPost(postId: postId, token: token)
             viewModel.fetchComments(postId: postId, token: token)
         }
@@ -176,10 +222,4 @@ struct FullPostView: View {
         .padding(.horizontal)
     }
 }
-    struct FullPostView_Previews: PreviewProvider {
-        static var previews: some View {
-            FullPostView(postId: "examplePostId", token: "exampleToken")
-        }
-    }
-
 

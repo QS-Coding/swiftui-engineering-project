@@ -1,10 +1,14 @@
 import SwiftUI
+import PhotosUI
 
 struct CreatePostView: View {
     @State private var userInput: String = ""
     @State private var showAlert: Bool = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
+    @State private var selectedImage: UIImage? = nil
+    @State private var showPhotoPicker = false
+    @State private var isUploadingImage = false
     @Environment(\.presentationMode) var presentationMode  // Handle modal dismissal
 
     var body: some View {
@@ -41,10 +45,19 @@ struct CreatePostView: View {
             .frame(minWidth: 100, maxWidth: 400, minHeight: 100, maxHeight: 250)
             .padding(.horizontal, 20)
 
+            // Show selected image preview
+            if let image = selectedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .cornerRadius(10)
+            }
+
             // Action Buttons - Centered
             HStack(alignment: .center, spacing: 20) {
                 Button("Add Image") {
-                    // Add Image action if necessary
+                    showPhotoPicker = true  // Show the photo picker
                 }
                 .frame(width: 120, height: 44)
                 .background(Color.blue)
@@ -52,11 +65,17 @@ struct CreatePostView: View {
                 .foregroundColor(.white)
 
                 Button("Create Post") {
-                    // Create Post action
                     Task {
                         do {
-                            // The token is automatically handled in PostService, so no need to pass it manually
-                            _ = try await PostService.createPost(message: userInput, image: nil)
+                            var imageUrl: String? = nil
+                            if let selectedImage = selectedImage {
+                                isUploadingImage = true
+                                // Upload the image to Cloudinary and get the image URL
+                                imageUrl = try await PostService.uploadImageToCloudinary(image: selectedImage)
+                            }
+
+                            // Create the post with or without an image URL
+                            _ = try await PostService.createPost(message: userInput, image: selectedImage)
                             
                             // Show success alert
                             alertTitle = "Post Created"
@@ -75,6 +94,7 @@ struct CreatePostView: View {
                 .background(Color.blue)
                 .cornerRadius(40)
                 .foregroundColor(.white)
+                .disabled(isUploadingImage)  // Disable if image is uploading
             }
             .padding(.top, 30)
 
@@ -96,6 +116,10 @@ struct CreatePostView: View {
         }
         .background(Color(red: 0, green: 0.96, blue: 1).ignoresSafeArea())  // Cover entire screen with background color
         .navigationBarHidden(true)  // Hide default navigation bar
+        .sheet(isPresented: $showPhotoPicker) {
+            // Use SwiftUI's photo picker
+            PhotoPicker(selectedImage: $selectedImage)
+        }
     }
 }
 
