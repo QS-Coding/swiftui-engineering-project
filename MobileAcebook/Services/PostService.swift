@@ -5,6 +5,8 @@ import Foundation
 class PostService {
     static let shared = PostService()
     private static let baseURL = "http://localhost:3000"
+    private static let CLOUDINARY_CLOUD_NAME = "dq51orqba"
+    private static let CLOUDINARY_UPLOAD_PRESET = "jr6ol490"
     
     private init() {}
     
@@ -22,7 +24,7 @@ class PostService {
         
         var request = URLRequest(url: url)
         if let token = AuthenticationService.shared.getToken() {
-            print(token)
+            print("Token: \(token)") // Debug: Token output
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
@@ -31,14 +33,12 @@ class PostService {
             
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    // Log the JSON data to debug
                     if let jsonString = String(data: data, encoding: .utf8) {
-                        print("Response JSON: \(jsonString)")
+                        print("Response JSON: \(jsonString)") // Debug: Response JSON output
                     }
                     
-                    // Decode the response object that includes the posts array
                     let decodedResponse = try JSONDecoder().decode(PostResponse.self, from: data)
-                    return decodedResponse.posts // Extract the array of posts from the response object
+                    return decodedResponse.posts
                 } else {
                     let errorMessage = "Failed to fetch posts: HTTP \(httpResponse.statusCode)"
                     print(errorMessage)
@@ -48,7 +48,7 @@ class PostService {
                 throw NSError(domain: "NetworkError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
             }
         } catch {
-            print("Error fetching posts: \(error)")
+            print("Error fetching posts: \(error)") // Debug: Error fetching posts
             throw error
         }
     }
@@ -56,12 +56,12 @@ class PostService {
     // Create a new post with optional image
     static func createPost(message: String, image: UIImage?) async throws -> Bool {
         if let image = image {
-            // If the user selected an image, upload it to Cloudinary first
+            print("Image selected for upload.") // Debug: Image selected
             let url = try await uploadImageToCloudinary(image: image)
-            // After getting the image URL, create the post with the image
+            print("Image uploaded to Cloudinary: \(url)") // Debug: Cloudinary image URL
             return try await createPostWithImage(message: message, imgUrl: url)
         } else {
-            // If no image was selected, create the post without an image
+            print("No image selected for upload.") // Debug: No image selected
             return try await createPostWithImage(message: message, imgUrl: nil)
         }
     }
@@ -101,11 +101,10 @@ class PostService {
     }
     
     // Upload image to Cloudinary
-    static private func uploadImageToCloudinary(image: UIImage) async throws -> String {
-        guard let cloudName = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_CLOUD_NAME") as? String,
-              let uploadPreset = Bundle.main.object(forInfoDictionaryKey: "CLOUDINARY_UPLOAD_PRESET") as? String else {
-            throw NSError(domain: "CloudinaryError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cloudinary credentials not found."])
-        }
+    static internal func uploadImageToCloudinary(image: UIImage) async throws -> String {
+        // Directly use the constants since they are not optional
+        let cloudName = CLOUDINARY_CLOUD_NAME
+        let uploadPreset = CLOUDINARY_UPLOAD_PRESET
         
         let url = URL(string: "https://api.cloudinary.com/v1_1/\(cloudName)/image/upload")!
         
@@ -122,24 +121,31 @@ class PostService {
         data.append("\(uploadPreset)\r\n".data(using: .utf8)!)
         
         if let imageData = image.jpegData(compressionQuality: 0.7) {
+            print("Image data size: \(imageData.count) bytes") // Debug: Image data size
             data.append("--\(boundary)\r\n".data(using: .utf8)!)
             data.append("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
             data.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
             data.append(imageData)
             data.append("\r\n".data(using: .utf8)!)
+        } else {
+            throw NSError(domain: "ImageError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert UIImage to JPEG data"])
         }
         
         data.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
         request.httpBody = data
         
-        let (responseData, _) = try await URLSession.shared.data(for: request)
-        
-        if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any],
-           let url = json["secure_url"] as? String {
-            return url
-        } else {
-            throw NSError(domain: "CloudinaryError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to upload image."])
+        do {
+            let (responseData, _) = try await URLSession.shared.data(for: request)
+            if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any],
+               let url = json["secure_url"] as? String {
+                return url
+            } else {
+                throw NSError(domain: "CloudinaryError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to upload image."])
+            }
+        } catch {
+            print("Error uploading image to Cloudinary: \(error)") // Debug: Error uploading image
+            throw error
         }
     }
     

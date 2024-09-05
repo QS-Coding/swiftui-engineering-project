@@ -18,12 +18,15 @@ struct FeedView: View {
                     .padding()
             } else {
                 ScrollView {
-                    // Display the posts using PostView
-                    ForEach(posts) { post in
-                        PostView(post: post)
-                            .padding(.bottom, 10)
+                    VStack(spacing: 10) {  // Add some spacing between posts
+                        // Display the posts in reversed order (newest first)
+                        ForEach(posts.reversed()) { post in
+                            PostView(post: post)
+                                .padding(.bottom, 10)
+                        }
                     }
                     .padding(.horizontal)
+                    .padding(.bottom, 100)  // Extra padding to avoid overlap with the navigation bar
                 }
             }
         }
@@ -52,30 +55,48 @@ struct FeedView: View {
             }
         }
     }
-
 }
 
 #Preview {
     FeedView()
 }
 
-
 struct PostView: View {
     let post: Post
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .foregroundColor(.clear)
-                .frame(width: 192, height: 217)
-                .background(Color(red: 0.85, green: 0.85, blue: 0.85))
-                .cornerRadius(48)
-                .padding(.trailing, 140)
+            // The grey background placeholder or image
+            if let imgUrl = post.imgUrl, let url = URL(string: imgUrl) {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .frame(width: 192, height: 217)  // Same size as before
+                        .cornerRadius(48)
+                        .padding(.trailing, 140)  // Image aligned to left with padding
+                } placeholder: {
+                    Rectangle()
+                        .foregroundColor(Color.gray.opacity(0.3))
+                        .frame(width: 192, height: 217)
+                        .cornerRadius(48)
+                        .padding(.trailing, 140)
+                }
+            } else {
+                Rectangle()
+                    .foregroundColor(Color.gray.opacity(0.3))
+                    .frame(width: 192, height: 217)
+                    .cornerRadius(48)
+                    .padding(.trailing, 140)
+            }
+
+            // Post message on the right side
             Text("\(post.message)")
                 .font(Font.custom("SF Pro", size: 17))
                 .foregroundColor(.black)
                 .frame(width: 135, height: 137, alignment: .topLeading)
                 .padding(.leading, 200)
+
+            // Heart icon to show like status
             Image(systemName: checkIfLiked(userId: post.id, post: post) ? "heart.fill" : "heart")
                 .resizable()
                 .frame(width: 35, height: 35)

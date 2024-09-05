@@ -21,6 +21,7 @@
 		AE5D85E32AC9AFD2009680C6 /* MockAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5D85E22AC9AFD2009680C6 /* MockAuthenticationService.swift */; };
 		AE5D85E62AC9B077009680C6 /* AuthenticationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5D85E52AC9B077009680C6 /* AuthenticationServiceProtocol.swift */; };
 		AE5D85E82AC9B29A009680C6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5D85E72AC9B29A009680C6 /* User.swift */; };
+		F82DA57C2C89BC6800CA8A56 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82DA57B2C89BC6800CA8A56 /* PhotoPicker.swift */; };
 		F8304C5D2C888BF000B4BBC9 /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8304C5C2C888BF000B4BBC9 /* FeedView.swift */; };
 		F8304C5F2C888C0500B4BBC9 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */; };
 		F83545452C875D9300AB9C9E /* FullPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83545442C875D9300AB9C9E /* FullPostViewModel.swift */; };
@@ -71,6 +72,7 @@
 		AE5D85E22AC9AFD2009680C6 /* MockAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthenticationService.swift; sourceTree = "<group>"; };
 		AE5D85E52AC9B077009680C6 /* AuthenticationServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationServiceProtocol.swift; sourceTree = "<group>"; };
 		AE5D85E72AC9B29A009680C6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F82DA57B2C89BC6800CA8A56 /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 		F8304C5C2C888BF000B4BBC9 /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		F83545442C875D9300AB9C9E /* FullPostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullPostViewModel.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				F8304C5C2C888BF000B4BBC9 /* FeedView.swift */,
 				F8304C5E2C888C0500B4BBC9 /* PostCardView.swift */,
 				F87BD8262C88AF5E0071F4D3 /* MainView.swift */,
+				F82DA57B2C89BC6800CA8A56 /* PhotoPicker.swift */,
 			);
 			path = MobileAcebook;
 			sourceTree = "<group>";
@@ -363,6 +366,7 @@
 				F8304C5D2C888BF000B4BBC9 /* FeedView.swift in Sources */,
 				AE5D85B02AC8A221009680C6 /* MobileAcebookApp.swift in Sources */,
 				F87BD8272C88AF5E0071F4D3 /* MainView.swift in Sources */,
+				F82DA57C2C89BC6800CA8A56 /* PhotoPicker.swift in Sources */,
 				F83545452C875D9300AB9C9E /* FullPostViewModel.swift in Sources */,
 				F844A8B22C87480F007EA48A /* Comment.swift in Sources */,
 				F844A8AE2C874802007EA48A /* UserService.swift in Sources */,
