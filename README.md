@@ -22,5 +22,7 @@ This repo contains the project for a Swift-UI frontend application consuming an 
 2. User navigated to Feed upon successful Login
 3. User can create new posts (with an optional image) by clicking "Create Post" on navbar
 4. User navigated to Feed upon successful Post creation
-5. User can refresh Feed by clicking "Refresh" on navbar
-6. User can logout by clicking "Logout" on navbar and confirming on alert/popup.
+5. User can click on a post in Feed and is navigated to Full Post View.
+6. User can read and add comments to post in Full Post View.
+7. User can refresh Feed by clicking "Refresh" on navbar
+8. User can logout by clicking "Logout" on navbar and confirming on alert/popup.
