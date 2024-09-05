@@ -4,7 +4,7 @@ struct FeedView: View {
     @State private var posts: [Post] = []  // To store the fetched posts
     @State private var isLoading: Bool = true  // To show loading state
     @State private var errorMessage: String?  // To handle and show errors
-
+    let token = AuthenticationService.shared.getToken()
     var body: some View {
         VStack {
             if isLoading {
@@ -20,8 +20,10 @@ struct FeedView: View {
                 ScrollView {
                     // Display the posts using PostView
                     ForEach(posts) { post in
-                        PostView(post: post)
-                            .padding(.bottom, 10)
+                        NavigationLink (destination: FullPostView(postId: post.id, token: token!)){
+                            PostView(post: post)
+                                .padding(.bottom, 10)
+                        }
                     }
                     .padding(.horizontal)
                 }
