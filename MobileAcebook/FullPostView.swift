@@ -118,7 +118,7 @@ struct FullPostView: View {
                     }) {
                         Image(systemName: "paperplane.fill")
                             .resizable()
-                            .frame(width: 28, height: 28)
+                            .frame(width: 44, height: 44)
                             .foregroundColor(.blue)
                     }
                     .disabled(isAddingComment)  // Disable button when adding comment
@@ -223,4 +223,3 @@ struct FullPostView: View {
     }
 
 }
-
