@@ -14,15 +14,19 @@ struct WelcomePageView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.black)
                 
-//                Image("ace")
+                Image("ace")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit) // Adjust aspect ratio if needed
+                    .frame(width: 100, height: 100)
 
                 Spacer()
 
-                Text("You are not logged in.\nPlease login or sign up")
+                Text("Welcome to Acebook!\n\nPlease sign up or login.")
                     .multilineTextAlignment(.center)
                     .padding()
+                    .fontWeight(.bold)
                     .background(Color.white.opacity(0.8))
-                    .cornerRadius(10)
+                    .cornerRadius(20)
                     .padding(.horizontal)
 
                 HStack {
