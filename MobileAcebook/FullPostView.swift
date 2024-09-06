@@ -40,11 +40,13 @@ struct FullPostView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .cornerRadius(10)
+                                    .padding(15)
                             } placeholder: {
                                 Rectangle()
                                     .fill(Color.gray.opacity(0.3))
                                     .frame(height: 200)
                                     .cornerRadius(10)
+                                    
                             }
                         } else {
                             Rectangle()
