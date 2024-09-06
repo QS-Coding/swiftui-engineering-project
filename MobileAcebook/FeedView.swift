@@ -40,7 +40,7 @@ struct FeedView: View {
                 shouldRefresh = false  // Reset the refresh flag
             }
         }
-        .background(Color(red: 0, green: 0.48, blue: 1).opacity(0.28))
+        .background(Color(red: 0, green: 0.96, blue: 1).ignoresSafeArea())
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -105,23 +105,42 @@ struct PostView: View {
                     }
             }
 
-            // Post message on the right side
-            Text("\(post.message)")
-                .font(Font.custom("SF Pro", size: 17))
-                .foregroundColor(.black)
-                .frame(width: 135, height: 137, alignment: .topLeading)
-                .padding(.leading, 200)
+            
+            VStack(alignment: .leading) {
+                            Text("Posted by: \(post.createdBy.username)")
+//                                .font(Font.custom("SF Pro Bold", size: 17))
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                                .padding(.leading, 220)
+                            
+                            
+                            Text("\(post.message)")
+                                .font(Font.custom("SF Pro", size: 17))
+                                .foregroundColor(.black)
+                                .frame(width: 135, height: 137, alignment: .topLeading)
+                                .padding(.leading, 220)
+                        }
 
-            // Heart icon to show like status
-            Image(systemName: isLiked ? "heart.fill" : "heart")
-                .resizable()
-                .frame(width: 35, height: 35)
-                .foregroundColor(isLiked ? .red : .black)
-                .padding(.top, 200)
-                .padding(.leading, 200)
-                .onTapGesture {
-                    toggleLike()
-                }
+
+            HStack(spacing: 20) {
+                            Image(systemName: "message")
+                                .resizable()
+                                .frame(width: 38, height: 38)
+                                .opacity(1.8)
+                                .onTapGesture {
+                                    showFullPostView.toggle()
+                                }
+                            
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
+                                .resizable()
+                                .frame(width: 35, height: 35)
+                                .foregroundColor(isLiked ? .red : .black)
+                                .onTapGesture {
+                                    toggleLike()
+                                }
+                    }
+                    .padding(.top, 180)  // Adjust vertical positioning
+                    .padding(.leading, 200)  // Align icons to the right side of the post image
         }
         .frame(width: 393, height: 259)
         .background(.white)
