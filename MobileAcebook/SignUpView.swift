@@ -46,6 +46,7 @@ struct SignUpView: View {
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .background(Color.white.opacity(0.95))
                             .font(Font.custom("SF Pro", size: 17))
+                            .cornerRadius(15)
 
                         // Email input field
                         TextField("Enter Email", text: $email)
@@ -58,6 +59,7 @@ struct SignUpView: View {
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .background(Color.white.opacity(0.95))
                             .font(Font.custom("SF Pro", size: 17))
+                            .cornerRadius(15)
 
                         // Password input field
                         SecureField("Enter Password", text: $password)
@@ -65,6 +67,7 @@ struct SignUpView: View {
                             .padding(.vertical, 15)
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .background(Color.white.opacity(0.95))
+                            .cornerRadius(15)
                     }
                     .padding(0)
                     .padding(.bottom)
@@ -109,7 +112,7 @@ struct SignUpView: View {
                     .frame(width: 272, height: 43, alignment: .center)
 
                     // NavigationLink to MainView, activated when signed up
-                    NavigationLink(destination: MainView(), isActive: $isSignUpSuccessful) {
+                    NavigationLink(destination: LoginView(), isActive: $isSignUpSuccessful) {
                         EmptyView()
                     }
 

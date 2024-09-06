@@ -10,9 +10,11 @@ struct WelcomePageView: View {
                 Spacer()
 
                 Text("Acebook")
-                    .font(.largeTitle)
+                    .font(.system(size: 50))
                     .fontWeight(.bold)
                     .foregroundColor(.black)
+                
+//                Image("ace")
 
                 Spacer()
 
