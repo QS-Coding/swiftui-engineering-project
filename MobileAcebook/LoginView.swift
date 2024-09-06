@@ -42,7 +42,6 @@ struct LoginView: View {
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(Color.white.opacity(0.95))
                         .font(.system(size: 17))
-                        .cornerRadius(15)
 
                     // Password input field
                     SecureField("Enter Password", text: $password)
@@ -50,7 +49,6 @@ struct LoginView: View {
                         .padding(.vertical, 15)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(Color.white.opacity(0.95))
-                        .cornerRadius(15)
                 }
                 .frame(width: 302, height: 180)
                 .cornerRadius(10)

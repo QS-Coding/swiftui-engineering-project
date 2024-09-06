@@ -33,27 +33,17 @@ struct CreatePostView: View {
                 .bold()
                 .padding(.bottom, 20)
 
-            ZStack {
-                // White background box
-                RoundedRectangle(cornerRadius: 30)
-                    .fill(Color.white)
-                    .frame(minWidth: 100, maxWidth: 300, minHeight: 120, maxHeight: 100)
-                    .shadow(radius: 5)  // Optional: Adds a shadow for better visibility
-
-                // Post Text Field
-                TextField(
-                    "Write what you would like to post...",
-                    text: $userInput,
-                    axis: .vertical
-                )
-                .padding(.bottom, 120)  //this is a hack to raise the text to the top
-                .padding(.horizontal, 16)
-                .frame(minWidth: 100, maxWidth: 300, minHeight: 100, maxHeight: 200)
-                   .background(Color(.white))
-                   .cornerRadius(30)
-                   .padding(.horizontal, 20)
-            }
-    
+            // Post Text Field - Centered
+            TextField(
+                "Post text, lorem ipsum day...",
+                text: $userInput,
+                axis: .vertical
+            )
+            .textFieldStyle(.roundedBorder)
+            .lineLimit(10, reservesSpace: true)
+            .multilineTextAlignment(.leading)
+            .frame(minWidth: 100, maxWidth: 400, minHeight: 100, maxHeight: 250)
+            .padding(.horizontal, 20)
 
             // Show selected image preview
             if let image = selectedImage {

@@ -10,11 +10,9 @@ struct WelcomePageView: View {
                 Spacer()
 
                 Text("Acebook")
-                    .font(.system(size: 50))
+                    .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.black)
-                
-//                Image("ace")
 
                 Spacer()
 
@@ -32,10 +30,12 @@ struct WelcomePageView: View {
                             navigateToSignUp = true
                         }) {
                             Text("Sign Up")
-                                .frame(width: 177, height: 54)
-                                .background(Color.blue)
-                                .cornerRadius(40)
-                                .foregroundColor(.white)
+                                .foregroundColor(.blue)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.white.opacity(0.8))
+                                .cornerRadius(10)
+                                .padding(.horizontal, 5)
                         }
                     }
 
@@ -45,10 +45,12 @@ struct WelcomePageView: View {
                             navigateToLogin = true
                         }) {
                             Text("Login")
-                                .frame(width: 177, height: 54)
-                                .background(Color.blue)
-                                .cornerRadius(40)
-                                .foregroundColor(.white)
+                                .foregroundColor(.blue)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.white.opacity(0.8))
+                                .cornerRadius(10)
+                                .padding(.horizontal, 5)
                         }
                     }
                 }
@@ -56,7 +58,7 @@ struct WelcomePageView: View {
 
                 Spacer()
             }
-            .background(Color(red: 0, green: 0.96, blue: 1).ignoresSafeArea())
+            .background(Color.cyan)
             .navigationBarHidden(true)  // Hide navigation bar for welcome screen
         }
     }
